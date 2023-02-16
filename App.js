@@ -4,11 +4,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import Home from './src/screens/Home';
 import StackNav from './src/navigations/Stack';
 import {Provider} from 'react-redux';
-import {store} from './src/redux/store';
+import Store from './src/redux/store';
 
 const App = () => {
   return (
-    <Provider store={store}>
+    <Provider store={Store}>
       <NavigationContainer>
         <StackNav />
       </NavigationContainer>

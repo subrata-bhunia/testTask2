@@ -13,6 +13,8 @@ import {Icon} from 'react-native-elements';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {useDispatch} from 'react-redux';
+import {productsRequest, productsSuccess} from '../redux/reducers';
 const Home = () => {
   const [allproduct, setallProduct] = useState([]);
   const navigation = useNavigation();
@@ -30,8 +32,10 @@ const Home = () => {
       setallProduct(all);
     });
   };
+  const dispatch = useDispatch();
   useEffect(() => {
     getAll();
+    dispatch(productsRequest());
   }, [isFocused]);
   const deleteProducts = id => {
     productsColl

@@ -1,21 +1,44 @@
-import {
-  ADD_PRODUCT,
-  DELETE_PRODUCT,
-  PRODUCT_DETAILS,
-  UPDATE_PRODUCT,
-} from './actionsType';
+import {createSlice} from '@reduxjs/toolkit';
 
-export const productDetails = (state = [], action) => {
-  switch (action.type) {
-    case ADD_PRODUCT:
-      return [...state, action.data];
-    case DELETE_PRODUCT:
-      return;
-    case UPDATE_PRODUCT:
-      return;
-    case PRODUCT_DETAILS:
-      return;
-    default:
-      return state;
-  }
+const initialState = {
+  status: '',
+  isLogin: false,
+  allProducts: [],
+  addProductResponse: {},
+  productDetails: {},
 };
+
+const RootReducer = createSlice({
+  name: 'Root',
+  initialState,
+  reducers: {
+    //  Product
+    productsRequest(state, action) {
+      state.status = action.type;
+    },
+    productsSuccess(state, action) {
+      state.allProducts = action.payload;
+      state.status = action.type;
+    },
+    productsFailure(state, action) {
+      state.error = action.error;
+      state.status = action.type;
+    },
+  },
+});
+
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  logoutRequest,
+  logoutSuccess,
+  logoutFailure,
+  signUpRequest,
+  signUpSuccess,
+  signUpFailure,
+  productsFailure,
+  productsRequest,
+  productsSuccess,
+} = RootReducer.actions;
+export default RootReducer.reducer;
