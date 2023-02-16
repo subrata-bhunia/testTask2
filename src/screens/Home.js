@@ -82,7 +82,7 @@ const Home = () => {
                       textDecorationColor: '#f00',
                       color: '#666',
                     }}>
-                    {item?.data?.price}
+                    ₹{item?.data?.price}
                   </Text>
                   <View
                     style={{
@@ -90,12 +90,11 @@ const Home = () => {
                       alignItems: 'center',
                       marginLeft: 7,
                     }}>
-                    <Icon name="inr" type="fontisto" size={15} />
                     <Text
                       style={{
                         color: '#000',
                       }}>
-                      {item?.data.offer_price}
+                      ₹{item?.data.offer_price}
                     </Text>
                   </View>
                 </View>
@@ -111,8 +110,20 @@ const Home = () => {
                       width: '50%',
                       backgroundColor: 'red',
                       padding: 5,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <Icon name="delete" type="antdesign" />
+                    <Image
+                      source={{
+                        uri: 'https://cdn-icons-png.flaticon.com/512/3405/3405244.png',
+                      }}
+                      style={{
+                        height: 24,
+                        width: 24,
+                        resizeMode: 'contain',
+                        tintColor: 'white',
+                      }}
+                    />
                   </Pressable>
                   <Pressable
                     onPress={() => {
@@ -122,8 +133,20 @@ const Home = () => {
                       width: '50%',
                       backgroundColor: 'green',
                       padding: 5,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <Icon name="edit" type="antdesign" />
+                    <Image
+                      source={{
+                        uri: 'https://icons.veryicon.com/png/o/miscellaneous/linear-small-icon/edit-246.png',
+                      }}
+                      style={{
+                        height: 24,
+                        width: 24,
+                        resizeMode: 'contain',
+                        tintColor: 'white',
+                      }}
+                    />
                   </Pressable>
                 </View>
               </View>
@@ -143,8 +166,18 @@ const Home = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignSelf: 'center',
+                marginTop: 'auto',
+                marginBottom: 10,
+                borderRadius: 10,
               }}>
-              <Text>Add Product</Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  letterSpacing: 1,
+                  color: '#000',
+                }}>
+                Add Product
+              </Text>
             </Pressable>
           );
         }}
@@ -157,7 +190,33 @@ const Home = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text>No Product Found</Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#000',
+                }}>
+                No Product Found
+              </Text>
+            </View>
+          );
+        }}
+        ListHeaderComponent={() => {
+          return (
+            <View
+              style={{
+                height: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 25,
+                  fontWeight: 'bold',
+                  letterSpacing: 1,
+                }}>
+                Product
+              </Text>
             </View>
           );
         }}

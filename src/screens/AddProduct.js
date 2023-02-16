@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   PermissionsAndroid,
   Platform,
@@ -9,10 +8,9 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect} from 'react';
-import {Icon, Input} from 'react-native-elements';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {Input} from 'react-native-elements';
+import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import {utils} from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -60,6 +58,7 @@ const AddProduct = () => {
     requestCameraPermission();
   }, []);
   const [image, setImage] = React.useState('');
+  const [imageUrl, setImageUrl] = React.useState('');
   const [name, setname] = React.useState('');
   const [price, setprice] = React.useState('');
   const [d_price, setd_price] = React.useState('');
@@ -72,40 +71,47 @@ const AddProduct = () => {
         quality: 0.7,
       },
       res => {
-        setImage(res.assets[0]);
-        console.log('a', res.assets);
-        uploadImage();
+        if (!res?.didCancel) {
+          setImage(res.assets[0]);
+          getImgUrl(res.assets[0]);
+        } else {
+          console.log('did Cancel');
+        }
       },
     );
   };
-  const uploadImage = async () => {
-    const {uri} = image;
-    console.log(image, uri);
-    const {filename} = image;
-    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-    // const ss = decodeURI(uploadUri);
-    // const path = `${utils.FilePath.DOCUMENT_DIRECTORY}/${ss}`;
-    // setUploading(true);
-    // setTransferred(0);
-    const task = storage('').ref(filename).putFile(uploadUri);
-    // set progress state
-    task.on('state_changed', snapshot => {
-      console.log(
-        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000,
-      );
+  const uploadImage = async (localImagePath, remotePath) => {
+    console.log('first', localImagePath, remotePath);
+    const reference = storage().ref(remotePath);
+    const task = reference.putFile(localImagePath);
+
+    return new Promise((resolve, reject) => {
+      task.on('state_changed', taskSnapshot => {
+        console.log(
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+        );
+      });
+
+      task
+        .then(() => {
+          console.log('Image uploaded to the bucket!');
+          return reference.getDownloadURL();
+        })
+        .then(downloadUrl => {
+          resolve(downloadUrl);
+        })
+        .catch(error => {
+          console.log('Image upload failed:', error);
+          reject(error);
+        });
     });
-    try {
-      await task;
-    } catch (e) {
-      console.error(e);
-    }
-    // setUploading(false);
-    Alert.alert(
-      'Photo uploaded!',
-      'Your photo has been uploaded to Firebase Cloud Storage!',
-    );
-    // setImage(null);
   };
+  const getImgUrl = async image => {
+    const imageUrl = await uploadImage(image?.uri, 'images/' + image?.fileName);
+    console.log(`Download URL: ${imageUrl}`);
+    setImageUrl(imageUrl);
+  };
+
   const navigate = useNavigation();
   const route = useRoute();
   console.log('hdhdh', image?.uri);
@@ -116,8 +122,8 @@ const AddProduct = () => {
       offer_price: d_price,
       image:
         image == ''
-          ? 'https://cdn2.stylecraze.com/wp-content/uploads/2020/09/15-Best-Image-Skincare-Products-Of-2020.jpg'
-          : image?.uri,
+          ? 'https://static.thenounproject.com/png/3674270-200.png'
+          : imageUrl,
     })
       .then(() => {
         console.log('Product added!');
@@ -130,7 +136,7 @@ const AddProduct = () => {
   const updateProduct = () => {
     ProductCollections.doc(route.params?.item?.id)
       .update({
-        image,
+        image: imageUrl,
         name,
         price,
         offer_price: d_price,
@@ -183,7 +189,16 @@ const AddProduct = () => {
             borderRadius: 10,
             alignSelf: 'center',
           }}>
-          <Icon name="camera" />
+          <Image
+            source={{
+              uri: 'https://static.thenounproject.com/png/3752804-200.png',
+            }}
+            style={{
+              height: 50,
+              width: 50,
+              resizeMode: 'contain',
+            }}
+          />
         </Pressable>
       )}
       <View style={{width: '90%', alignSelf: 'center'}}>
@@ -208,6 +223,7 @@ const AddProduct = () => {
           onChangeText={txt => {
             setprice(txt);
           }}
+          keyboardType="number-pad"
         />
         <Input
           label="Product Discount Price"
@@ -219,6 +235,7 @@ const AddProduct = () => {
           onChangeText={txt => {
             setd_price(txt);
           }}
+          keyboardType="number-pad"
         />
         <Pressable
           onPress={() => {
