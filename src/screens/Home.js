@@ -5,12 +5,14 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Icon} from 'react-native-elements';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 const Home = () => {
   const [allproduct, setallProduct] = useState([]);
   const navigation = useNavigation();
@@ -155,30 +157,61 @@ const Home = () => {
         }}
         ListFooterComponent={() => {
           return (
-            <Pressable
-              onPress={() => {
-                navigation.navigate('AddProduct');
-              }}
-              style={{
-                height: 50,
-                width: '90%',
-                borderWidth: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignSelf: 'center',
-                marginTop: 'auto',
-                marginBottom: 10,
-                borderRadius: 10,
-              }}>
-              <Text
+            <>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('AddProduct');
+                }}
                 style={{
-                  fontSize: 20,
-                  letterSpacing: 1,
-                  color: '#000',
+                  height: 50,
+                  width: '90%',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  marginTop: 'auto',
+                  marginBottom: 10,
+                  borderRadius: 10,
                 }}>
-                Add Product
-              </Text>
-            </Pressable>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    letterSpacing: 1,
+                    color: '#000',
+                  }}>
+                  Add Product
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  auth()
+                    .signOut()
+                    .then(() => {
+                      ToastAndroid.show('User signed out!', ToastAndroid.SHORT);
+                      navigation.navigate('Login');
+                    });
+                }}
+                style={{
+                  height: 50,
+                  width: '90%',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  marginTop: 'auto',
+                  marginBottom: 10,
+                  borderRadius: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    letterSpacing: 1,
+                    color: '#000',
+                  }}>
+                  Log Out
+                </Text>
+              </Pressable>
+            </>
           );
         }}
         ListEmptyComponent={() => {

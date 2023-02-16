@@ -1,13 +1,47 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import {ToastAndroid} from 'react-native';
 
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const login = () => {
+    if (!email) {
+      alert('Enter Email');
+    } else if (!pass) {
+      alert('Enter Password');
+    } else {
+      auth()
+        .signInWithEmailAndPassword(email, pass)
+        .then(res => {
+          console.log('User account created & signed in!', res);
+          navigation.navigate('Home');
+          ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
+        })
+        .catch(error => {
+          if (error.code === 'auth/user-not-found') {
+            alert('Not Registered');
+          }
+
+          if (error.code === 'auth/invalid-email') {
+            alert('That email address is invalid!');
+          }
+
+          if (error.code === 'auth/wrong-password') {
+            alert('Wrong Password');
+          }
+        });
+    }
+  };
+  useEffect(() => {
+    setEmail('');
+    setPass('');
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <View
@@ -42,10 +76,11 @@ const Login = () => {
               justifyContent: 'center',
             }}>
             <TextInput
-              style={{height: 40, fontSize: 14}}
+              style={{height: 40, fontSize: 14, textTransform: 'lowercase'}}
               placeholder="Enter Your Email"
               value={email}
               onChangeText={text => setEmail(text)}
+              keyboardType="email-address"
             />
           </View>
           <View
@@ -64,10 +99,11 @@ const Login = () => {
               placeholder="Enter Your Password"
               value={pass}
               onChangeText={text => setPass(text)}
+              // secureTextEntry
             />
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Singup')}
+            onPress={login}
             style={{
               width: 60,
               paddingVertical: 10,

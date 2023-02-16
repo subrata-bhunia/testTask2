@@ -1,13 +1,42 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-
+import auth from '@react-native-firebase/auth';
 const Singup = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  useEffect(() => {
+    setEmail('');
+    setPass('');
+  }, []);
+  const signUp = () => {
+    if (!email) {
+      alert('Enter Email');
+    } else if (!pass) {
+      alert('Enter Password');
+    } else {
+      auth()
+        .createUserWithEmailAndPassword(email, pass)
+        .then(() => {
+          console.log('User account created & signed in!');
+          navigation.navigate('Home');
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+          }
+
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+          }
+
+          console.error(error);
+        });
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <View
@@ -67,7 +96,7 @@ const Singup = () => {
             />
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Singup')}
+            onPress={signUp}
             style={{
               width: 70,
               paddingVertical: 10,
