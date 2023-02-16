@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "791741786977",
+    "project_id": "testtask-webskitters",
+    "storage_bucket": "testtask-webskitters.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791741786977:android:74a26a019ef7aebb387320",
+        "android_client_info": {
+          "package_name": "com.testtask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791741786977-uiarpjhp2dsu1bnljogecj97da68de7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCovssaL25IUTqfAbtjHLpoZyctjYOnFn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791741786977-uiarpjhp2dsu1bnljogecj97da68de7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
